@@ -8,6 +8,7 @@ from matplotlib.cbook import boxplot_stats
 import seaborn as sns
 import numpy
 from collections import Counter
+import pingouin as pg
 
 def read_data_file(path):
     with open(path) as msg_f:
@@ -162,9 +163,24 @@ def low_freq_msgs(corec_messages, copynet_messages, reference_messages, train_me
     for i in low_frequency_indeces:
         low_frequency_corec.append(corec_messages[i])
 
-    print(len(low_frequency_target),'\n', len(low_frequency_copy),'\n', len(low_frequency_corec))
-    print(len(list(set(low_frequency_words))))
-    
     return(low_frequency_target, low_frequency_copy, low_frequency_corec)
+
+
+def similarity_score(copynet_messages, corec_messages,  reference_messages):
+
+    corec_Meteor, corec_scores_Meteor, corec_Rouge, corec_scores_Rouge = text_similarity(corec_messages,  reference_messages)
+    copy_Meteor, copy_scores_Meteor, copy_Rouge, copy_scores_Rouge = text_similarity(copynet_messages, reference_messages)
+
+    print("CoRec Meteor: ", corec_Meteor, "CoRec Rouge: ", corec_Rouge)
+    print("CopyNet Meteor: ", copy_Meteor, "CopyNet Rouge: ", copy_Rouge)
+
+    box_plot(copy_scores_Rouge, corec_scores_Rouge, "rouge.png")
+    box_plot(copy_scores_Meteor, corec_scores_Meteor, "meteor.png")
+
+    print("Man-Whitney U statistical test results for ROUGE scores")
+    print(pg.mwu(corec_scores_Rouge, copy_scores_Rouge, alternative='two-sided'))
+
+    print("Man-Whitney U statistical test results for Meteor scores")
+    print(pg.mwu(corec_scores_Meteor, copy_scores_Meteor, alternative='two-sided'))
 
 
