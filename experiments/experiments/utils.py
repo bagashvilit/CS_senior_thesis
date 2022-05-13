@@ -81,89 +81,140 @@ def box_plot(copynet_scores, corec_scores, name):
     box_plot.figure.savefig("experiments/plots/{}".format(name))
     plt.clf()
 
-
-def count_low_frequency_word(train, reference):
-    
-
-    reference_tokenized = tokenize_msg(reference)
-    train_tokenized = tokenize_msg(train)
-
-
-    target_all_words = list(numpy.concatenate(reference_tokenized).flat)
-    train_all_words = list(numpy.concatenate(train_tokenized).flat)
+class word_analysis:
+    def __init__(self, train_messages, reference_messages, corec_messages, copynet_messages):
+        self.train_messages = train_messages
+        self.reference_messages = reference_messages
+        self.corec_messages = corec_messages
+        self.copynet_messages = copynet_messages
 
 
-    target_frequencies = Counter(target_all_words)
-    train_frequencies = Counter(train_all_words)
+    def count_low_frequency_word(self):
+        
 
-    updated_frequencies = {}
-    for key, value in target_frequencies.items():
-        updated_frequencies.update({key:train_frequencies[key]})
-
-    # make a list of low frequency words, count less than 5
-    low_frequency_words = []
-
-    for key, value in updated_frequencies.items():
-        if value <= 5:
-            low_frequency_words.append(key)
-
-    return low_frequency_words
+        reference_tokenized = tokenize_msg(self.reference_messages)
+        train_tokenized = tokenize_msg(self.train_messages)
 
 
-def corec_vs_copy_low_frequency(train_messages, reference_messages, corec_messages, copynet_messages):
-
-    low_frequency_words = count_low_frequency_word(train_messages, reference_messages)
-
-    corec_tokenized = tokenize_msg(corec_messages)
-    copy_tokenized = tokenize_msg(copynet_messages)
-
-    corec_all_words = list(numpy.concatenate(corec_tokenized).flat)
-    copy_all_words = list(numpy.concatenate(copy_tokenized).flat)
-
-    copy = 0
-    for i in low_frequency_words:
-        if i in copy_all_words:
-            copy += 1
-    print("Count of low frequency words by CopyNet: ",copy)
-
-    corec = 0
-    for i in low_frequency_words:
-        if i in corec_all_words:
-            corec += 1
-
-    print("Count of low frequency words by CoRec: ", corec)
+        target_all_words = list(numpy.concatenate(reference_tokenized).flat)
+        train_all_words = list(numpy.concatenate(train_tokenized).flat)
 
 
+        target_frequencies = Counter(target_all_words)
+        train_frequencies = Counter(train_all_words)
 
-def low_freq_msgs(corec_messages, copynet_messages, reference_messages, train_messages):
+        updated_frequencies = {}
+        for key, value in target_frequencies.items():
+            updated_frequencies.update({key:train_frequencies[key]})
 
-    tokenized_target = tokenize_msg(reference_messages)
-    low_frequency_words = count_low_frequency_word(train_messages, reference_messages)
+        # make a list of low frequency words, count less than 5
+        low_frequency_words = []
 
-    low_frequency_indeces = []
+        for key, value in updated_frequencies.items():
+            if value <= 5:
+                low_frequency_words.append(key)
 
-    for i in range(len(tokenized_target)):
-        for j in tokenized_target[i]:
-            if j in low_frequency_words:
-                low_frequency_indeces.append(i)
-
-    low_frequency_indeces = list(set(low_frequency_indeces))
-
-    low_frequency_target = []
-    for i in low_frequency_indeces:
-        low_frequency_target.append(reference_messages[i])
+        return low_frequency_words
 
 
-    low_frequency_copy = []
-    for i in low_frequency_indeces:
-        low_frequency_copy.append(copynet_messages[i])
+    def corec_vs_copy_low_frequency(self):
+
+        low_frequency_words = self.count_low_frequency_word()
+        print("Count of low frequency words in reference messages: ", len(low_frequency_words))
+        corec_tokenized = tokenize_msg(self.corec_messages)
+        copy_tokenized = tokenize_msg(self.copynet_messages)
+
+        corec_all_words = list(numpy.concatenate(corec_tokenized).flat)
+        copy_all_words = list(numpy.concatenate(copy_tokenized).flat)
+
+        copy = 0
+        for i in low_frequency_words:
+            if i in copy_all_words:
+                copy += 1
+        print("Count of low frequency words by CopyNet: ",copy)
+
+        corec = 0
+        for i in low_frequency_words:
+            if i in corec_all_words:
+                corec += 1
+
+        print("Count of low frequency words by CoRec: ", corec)
 
 
-    low_frequency_corec = []
-    for i in low_frequency_indeces:
-        low_frequency_corec.append(corec_messages[i])
+    def low_freq_msgs(self):
 
-    return(low_frequency_target, low_frequency_copy, low_frequency_corec)
+        tokenized_target = tokenize_msg(self.reference_messages)
+        low_frequency_words = self.count_low_frequency_word()
+
+        low_frequency_indeces = []
+
+        for i in range(len(tokenized_target)):
+            for j in tokenized_target[i]:
+                if j in low_frequency_words:
+                    low_frequency_indeces.append(i)
+
+        low_frequency_indeces = list(set(low_frequency_indeces))
+
+        low_frequency_target = []
+        for i in low_frequency_indeces:
+            low_frequency_target.append(self.reference_messages[i])
+
+
+        low_frequency_copy = []
+        for i in low_frequency_indeces:
+            low_frequency_copy.append(self.copynet_messages[i])
+
+
+        low_frequency_corec = []
+        for i in low_frequency_indeces:
+            low_frequency_corec.append(self.corec_messages[i])
+
+        return(low_frequency_target, low_frequency_copy, low_frequency_corec)
+
+
+
+    def oov_words_count(self):
+
+        oov_words = []
+
+        reference_tokenized = tokenize_msg(self.reference_messages)
+        train_tokenized = tokenize_msg(self.train_messages)
+
+
+        target_all_words = list(numpy.concatenate(reference_tokenized).flat)
+        train_all_words = list(numpy.concatenate(train_tokenized).flat)
+
+        for i in target_all_words:
+            if i not in train_all_words:
+                if i not in oov_words:
+                    oov_words.append(i)
+        return oov_words
+
+
+    def corec_vs_copy_oov(self):
+
+        oov_words = self.oov_words_count()
+        print("Total count of oov words in reference messages: ", len(oov_words))
+
+        corec_tokenized = tokenize_msg(self.corec_messages)
+        copy_tokenized = tokenize_msg(self.copynet_messages)
+
+        corec_all_words = list(numpy.concatenate(corec_tokenized).flat)
+        copy_all_words = list(numpy.concatenate(copy_tokenized).flat)
+
+        copy = 0
+        for i in oov_words:
+            if i in copy_all_words:
+                copy += 1
+        print("Count of low frequency words by CopyNet: ",copy)
+
+        corec = 0
+        for i in oov_words:
+            if i in corec_all_words:
+                corec += 1
+
+        print("Count of low frequency words by CoRec: ", corec)
+
 
 
 def similarity_score(copynet_messages, corec_messages,  reference_messages):
