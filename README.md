@@ -29,7 +29,7 @@
 - run the following command to automatically install all the project dependencies with poetry:
     `poetry install`
 
-## Automated testing Test
+## Automated testing
 
 - To run the test suite first navigate to `experiments/experiments/tests/`
 
