@@ -1,7 +1,7 @@
 from experiments import __version__
-from experiments import utils
 import pytest
 from experiments.utils import word_analysis
+from experiments import utils
 
 def test_version():
     assert __version__ == '0.1.0'
