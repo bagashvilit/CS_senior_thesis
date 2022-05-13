@@ -1,4 +1,6 @@
-# CS_senior_thesis
+# Commit message generation
+
+This project provides the source code to replicate the experiemntal study of my senior thesis
 
 ## Installation
 
