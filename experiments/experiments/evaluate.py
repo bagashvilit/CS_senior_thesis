@@ -29,11 +29,17 @@ def similarity(low: bool=False):
 def count():
 
     print("Count of correctly predicted low frequency words")
-    evaluator.corec_vs_copy_low_frequency()
-
+    total_low, copy_low, corec_low = evaluator.corec_vs_copy_low_frequency()
+    print("Count of low frequency words in reference messages: ", total_low)
+    print("Count of low frequency words by CopyNet: ",copy_low)
+    print("Count of low frequency words by CoRec: ", corec_low)
 
     print("\nCount of correctly predicted oov words")
-    evaluator.corec_vs_copy_oov()
+    total_oov, copy_oov, corec_oov = evaluator.corec_vs_copy_oov()
+    print("Total count of oov words in reference messages: ", total_oov)
+    print("Count of low frequency words by CopyNet: ",copy_oov)
+    print("Count of low frequency words by CoRec: ", corec_oov)
+
 
 
 

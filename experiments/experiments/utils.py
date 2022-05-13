@@ -1,4 +1,3 @@
-from lib2to3.pgen2.tokenize import tokenize
 from experiments.pycocoevalcap.meteor.meteor import Meteor
 from experiments.pycocoevalcap.rouge.rouge import Rouge
 from experiments.pycocoevalcap.bleu.bleu import Bleu
@@ -81,6 +80,7 @@ def box_plot(copynet_scores, corec_scores, name):
     box_plot.figure.savefig("experiments/plots/{}".format(name))
     plt.clf()
 
+
 class word_analysis:
     def __init__(self, train_messages, reference_messages, corec_messages, copynet_messages):
         self.train_messages = train_messages
@@ -120,7 +120,8 @@ class word_analysis:
     def corec_vs_copy_low_frequency(self):
 
         low_frequency_words = self.count_low_frequency_word()
-        print("Count of low frequency words in reference messages: ", len(low_frequency_words))
+        total = len(low_frequency_words)
+
         corec_tokenized = tokenize_msg(self.corec_messages)
         copy_tokenized = tokenize_msg(self.copynet_messages)
 
@@ -131,14 +132,14 @@ class word_analysis:
         for i in low_frequency_words:
             if i in copy_all_words:
                 copy += 1
-        print("Count of low frequency words by CopyNet: ",copy)
 
         corec = 0
         for i in low_frequency_words:
             if i in corec_all_words:
                 corec += 1
 
-        print("Count of low frequency words by CoRec: ", corec)
+        return(total, copy,corec)
+        
 
 
     def low_freq_msgs(self):
@@ -194,7 +195,7 @@ class word_analysis:
     def corec_vs_copy_oov(self):
 
         oov_words = self.oov_words_count()
-        print("Total count of oov words in reference messages: ", len(oov_words))
+        total = len(oov_words)
 
         corec_tokenized = tokenize_msg(self.corec_messages)
         copy_tokenized = tokenize_msg(self.copynet_messages)
@@ -206,15 +207,15 @@ class word_analysis:
         for i in oov_words:
             if i in copy_all_words:
                 copy += 1
-        print("Count of low frequency words by CopyNet: ",copy)
+        
 
         corec = 0
         for i in oov_words:
             if i in corec_all_words:
                 corec += 1
 
-        print("Count of low frequency words by CoRec: ", corec)
-
+        return (total, copy, corec)
+        
 
 
 def similarity_score(copynet_messages, corec_messages,  reference_messages):
