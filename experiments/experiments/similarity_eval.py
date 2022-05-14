@@ -70,13 +70,13 @@ def similarity_score(copynet_messages, corec_messages,  reference_messages):
     corec_Meteor, corec_scores_Meteor, corec_Rouge, corec_scores_Rouge = text_similarity(corec_messages,  reference_messages)
     copy_Meteor, copy_scores_Meteor, copy_Rouge, copy_scores_Rouge = text_similarity(copynet_messages, reference_messages)
 
-    print("CoRec Meteor: ", corec_Meteor, "CoRec Rouge: ", corec_Rouge)
+    print("\nCoRec Meteor: ", corec_Meteor, "CoRec Rouge: ", corec_Rouge)
     print("CopyNet Meteor: ", copy_Meteor, "CopyNet Rouge: ", copy_Rouge)
 
     box_plot(copy_scores_Rouge, corec_scores_Rouge, "rouge.png")
     box_plot(copy_scores_Meteor, corec_scores_Meteor, "meteor.png")
 
-    print("Man-Whitney U statistical test results for ROUGE scores")
+    print("\nMan-Whitney U statistical test results for ROUGE scores")
     print(pg.mwu(corec_scores_Rouge, copy_scores_Rouge, alternative='two-sided'))
 
     print("Man-Whitney U statistical test results for Meteor scores")
