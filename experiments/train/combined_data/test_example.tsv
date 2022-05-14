@@ -1,0 +1,1 @@
+mmm a / CHANGELOG . md <nl> ppp b / CHANGELOG . md <nl> # Changelog <nl> - # 2 . 2 . 0 ( 16 / 07 / 2015 ) - SNAPSHOT <nl> + # 2 . 1 . 1 ( 29 / 02 / 2016 ) - SNAPSHOT <nl> - Added AppCompat Styles ( AppCompatTextView will now pickup textViewStyle etc ) . Thanks @ paul - turner <nl> - Fix for Toolbar not inflating ` TextView ` s upfront . <nl>	Fix snapshot version
